@@ -1,14 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, UseInterceptors, UploadedFile, FileValidator, ParseFilePipe, FileTypeValidator } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
+  create(@Body(new ValidationPipe()) createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
@@ -23,8 +24,17 @@ export class UsersController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  @UseInterceptors(FileInterceptor('image'))
+  update(
+    @Param('id') id: string,
+    @Body(new ValidationPipe({ skipUndefinedProperties: true })) updateUserDto: UpdateUserDto,
+    @UploadedFile
+      (new ParseFilePipe({
+        fileIsRequired: false,
+        validators: [new FileTypeValidator({ fileType: "image/*" })]
+      }))
+    file: Express.Multer.File) {
+    return this.usersService.update(+id, updateUserDto, file);
   }
 
   @Delete(':id')

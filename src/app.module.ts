@@ -2,12 +2,12 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
-import { TodosModule } from './todos/todos.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { SupabaseModule } from './microservice/supabase/supabase.module';
+import { AuthModule } from './authentication/auth/auth.module';
 
 @Module({
-  imports: [UsersModule, TodosModule, PrismaModule, SupabaseModule],
+  imports: [UsersModule, PrismaModule, SupabaseModule, AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })
