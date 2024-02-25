@@ -5,9 +5,10 @@ import { UsersModule } from './users/users.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { SupabaseModule } from './microservice/supabase/supabase.module';
 import { AuthModule } from './authentication/auth/auth.module';
+import { TodosModule } from './todos/todos.module';
 
 @Module({
-  imports: [UsersModule, PrismaModule, SupabaseModule, AuthModule],
+  imports: [UsersModule, PrismaModule, SupabaseModule, AuthModule, TodosModule],
   controllers: [AppController],
   providers: [AppService],
 })
