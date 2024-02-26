@@ -58,6 +58,7 @@ export class UsersService {
     if (!user) {
       throw new BadRequestException("User Not Found");
     }
+    await this.prisma.todo.deleteMany({ where: { userId: user.id } });
     return this.prisma.user.delete({ where: { id } });
   }
 }
